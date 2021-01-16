@@ -8,7 +8,6 @@
         <form class="form-horizontal" id="addForm" method="post">
             {% csrf_token %}
             <input type="hidden" name='id' value="{{ menu.id }}"/>
-            <!-- 替换说明：以下内容用来替换form标签下的原有的<div class="box-body">内容，一直到<div class="box-footer"> -->
             <div class="box-body">
                 <fieldset>
                     <legend>

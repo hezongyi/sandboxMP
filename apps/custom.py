@@ -1,3 +1,7 @@
+# @Time   : 2018/11/9 22:06
+# @Author : RobbieHan
+# @File   : custom.py
+
 import json
 
 from django.views.generic import CreateView, UpdateView
@@ -8,22 +12,13 @@ from system.mixin import LoginRequiredMixin
 from system.models import Menu
 
 
-class SandboxEditViewMixin:
+class BreadcrumbMixin:
 
-    def post(self, request, *args, **kwargs):
-        res = dict(result=False)
-        form = self.get_form()
-        if form.is_valid():
-            form.save()
-            res['result'] = True
-        return HttpResponse(json.dumps(res), content_type='application/json')
-
-
-class SandboxCreateView(LoginRequiredMixin, SandboxEditViewMixin, CreateView):
-        """
-        View for create an object, with a response rendered by a template.
-        Returns information with Json when the data is created successfully or fails.
-        """
+    def get_context_data(self, **kwargs):
+        menu = Menu.get_menu_by_request_url(url=self.request.path_info)
+        if menu is not None:
+            kwargs.update(menu)
+        return super().get_context_data(**kwargs)
 
 
 class SandboxGetObjectMixin:
@@ -41,24 +36,32 @@ class SandboxGetObjectMixin:
                                  % self.__class__.__name__)
         try:
             obj = queryset.get()
-        except queryset.model.DoesNoExist:
+        except queryset.model.DoesNotExist:
             raise Http404("No %(verbose_name)s found matching the query" %
-                          {'verbose_name': queryset.model.__meta.verbose_name})
+                          {'verbose_name': queryset.model._meta.verbose_name})
         return obj
 
 
-class SandboxUpdateView(LoginRequiredMixin, SandboxEditViewMixin, SandboxGetObjectMixin, UpdateView):
+class SandboxEditViewMixin:
 
+    def post(self, request, *args, **kwargs):
+        res = dict(result=False)
+        form = self.get_form()
+        if form.is_valid():
+            form.save()
+            res['result'] = True
+        return HttpResponse(json.dumps(res), content_type='application/json')
+
+
+class SandboxCreateView(LoginRequiredMixin, SandboxEditViewMixin, CreateView):
+    """"
+    View for create an object, with a response rendered by a template.
+    Returns information with Json when the data is created successfully or fails.
+    """
+
+
+class SandboxUpdateView(LoginRequiredMixin, SandboxEditViewMixin, SandboxGetObjectMixin, UpdateView):
+    """View for updating an object, with a response rendered by a template."""
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
         return super().post(request, *args, **kwargs)
-
-
-class BreadcrumbMixin:
-
-    def get_context_data(self, **kwargs):
-        menu = Menu.get_menu_by_request_url(url=self.request.path_info)
-        if menu is not None:
-            kwargs.update(menu)
-        return super().get_context_data(**kwargs)
-

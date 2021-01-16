@@ -77,7 +77,6 @@
                     enable: true,
                     //chkboxType : { "Y" : "", "N" : "" }
                 },
-                //注释2：初始化zTree的数据结构，key里面的设置的是菜单显示的数据
                 data: {
                     key: {
                         name: "name",
@@ -115,7 +114,7 @@
                     },
                 }
             };
-            // 注释3：通过菜单列表接口获取左面窗口菜单数据（全部菜单）
+
             $.ajax({
                 type: "GET",
                 url: "{% url 'system:rbac-role-role2menu_list' %}",
@@ -129,7 +128,7 @@
                     return;
                 }
             });
-            // 注释4：通过菜单列表接口获取右面窗口菜单数据（当前角色组已绑定的数据）
+
             $.ajax({
                 type: "GET",
                 url: "{% url 'system:rbac-role-role2menu_list' %}",

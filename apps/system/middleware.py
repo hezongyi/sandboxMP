@@ -9,7 +9,7 @@ class MenuCollection(MiddlewareMixin):
 
     def get_user(self, request):
         return request.user
-    # 注释1：
+
     def get_menu_from_role(self, request, user=None):
         if user is None:
             user = self.get_user(request)
@@ -25,13 +25,13 @@ class MenuCollection(MiddlewareMixin):
             return [menu for menu in menus if menu['permissions__id'] is not None]
         except AttributeError:
             return None
-    # 注释2：
+
     def get_permission_url(self, request):
         role_menus = self.get_menu_from_role(request)
         if role_menus is not None:
             permission_url_list = [menu['permissions__url'] for menu in role_menus]
             return permission_url_list
-    #注释3：
+
     def get_permission_menu(self, request):
         permission_menu_list = []
         role_menus = self.get_menu_from_role(request)
@@ -49,7 +49,7 @@ class MenuCollection(MiddlewareMixin):
                 }
                 permission_menu_list.append(menu)
             return permission_menu_list
-    # 注释4：
+
     def get_top_reveal_menu(self, request):
         top_menu = []
         permission_menu_dict = {}
@@ -78,9 +78,8 @@ class MenuCollection(MiddlewareMixin):
             else:
                 reveal_menu = None
             return top_menu, reveal_menu
-    # 注释5：
-    def process_request(self, request):
 
+    def process_request(self, request):
         if self.get_top_reveal_menu(request):
             request.top_menu, request.reveal_menu = self.get_top_reveal_menu(request)
             request.permission_url_list = self.get_permission_url(request)

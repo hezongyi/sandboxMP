@@ -1,5 +1,8 @@
-import re
+# @Time   : 2018/10/17 23:13
+# @Author : RobbieHan
+# @File   : forms.py
 
+import re
 from django import forms
 from django.contrib.auth import get_user_model
 
@@ -9,26 +12,24 @@ User = get_user_model()
 
 
 class LoginForm(forms.Form):
-    username = forms.CharField(required=True, error_messages={"required": "请填写用户名"})
-    password = forms.CharField(required=True, error_messages={"required": "请填写密码"})
+    username = forms.CharField(required=True, error_messages={"requeired": "请填写用户名"})
+    password = forms.CharField(required=True, error_messages={"requeired": "请填写密码"})
 
 
 class StructureForm(forms.ModelForm):
-
     class Meta:
         model = Structure
         fields = ['type', 'name', 'parent']
 
 
 class UserCreateForm(forms.ModelForm):
-
     password = forms.CharField(
         required=True,
         min_length=6,
         max_length=20,
         error_messages={
             "required": "密码不能为空",
-            "min_length": "密码长度最少为6位数",
+            "min_length": "密码长度最少6位数",
         }
     )
 
@@ -38,7 +39,7 @@ class UserCreateForm(forms.ModelForm):
         max_length=20,
         error_messages={
             "required": "确认密码不能为空",
-            "min_length": "密码长度最少为6位数",
+            "min_length": "密码长度最少6位数",
         }
     )
 
@@ -57,8 +58,8 @@ class UserCreateForm(forms.ModelForm):
                 "required": "手机号码不能为空",
                 "max_length": "输入有效的手机号码",
                 "min_length": "输入有效的手机号码"
-            },
-        }
+            }
+         }
 
     def clean(self):
         cleaned_data = super(UserCreateForm, self).clean()
@@ -69,7 +70,7 @@ class UserCreateForm(forms.ModelForm):
         confirm_password = cleaned_data.get("confirm_password")
 
         if User.objects.filter(username=username).count():
-            raise forms.ValidationError('用户名{}已存在'.format(username))
+            raise forms.ValidationError('用户名：{}已存在'.format(username))
 
         if password != confirm_password:
             raise forms.ValidationError("两次密码输入不一致")
@@ -82,11 +83,10 @@ class UserCreateForm(forms.ModelForm):
             raise forms.ValidationError("手机号码非法")
 
         if User.objects.filter(email=email).count():
-            raise forms.ValidationError('邮箱：{已存在'.format(email))
+            raise forms.ValidationError('邮箱：{}已存在'.format(email))
 
 
 class UserUpdateForm(forms.ModelForm):
-
     class Meta:
         model = User
         fields = [
@@ -103,8 +103,7 @@ class PasswordChangeForm(forms.Form):
         max_length=20,
         error_messages={
             "required": u"密码不能为空"
-        }
-    )
+        })
 
     confirm_password = forms.CharField(
         required=True,
@@ -112,8 +111,7 @@ class PasswordChangeForm(forms.Form):
         max_length=20,
         error_messages={
             "required": u"确认密码不能为空"
-        }
-    )
+        })
 
     def clean(self):
         cleaned_data = super(PasswordChangeForm, self).clean()
