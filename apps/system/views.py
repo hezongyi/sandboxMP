@@ -1,10 +1,10 @@
-from django.shortcuts import render
-from django.views.generic.base import View, TemplateView
+from django.views.generic import TemplateView
 from .mixin import LoginRequiredMixin
+from custom import BreadcrumbMixin
 
 # Create your views here.
 
 
-class SystemView(LoginRequiredMixin, TemplateView):
+class SystemView(LoginRequiredMixin, BreadcrumbMixin, TemplateView):
 
     template_name = 'system/system_index.html'

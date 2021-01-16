@@ -49,6 +49,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'apps.system.middleware.MenuCollection',
+    'apps.system.middleware.RbacMiddleware',
 ]
 
 ROOT_URLCONF = 'sandboxMP.urls'
@@ -133,3 +135,19 @@ LOGIN_URL = '/login/'
 MEDIA_URL = '/media/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# safe url
+SAFE_URL = [r'^/$',
+            '/login/',
+            '/logout',
+            '/index/',
+            '/media/',
+            '/admin/',
+            '/ckeditor/',
+            ]
+
+# session timeout
+
+SESSION_COOKIE_AGE = 60 * 20 # session有效时间为20分钟
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True # 关闭浏览器Cookie失效
+SESSION_SAVE_EVERY_REQUEST = True # 以上两个配置需要配合这一条才能够生效

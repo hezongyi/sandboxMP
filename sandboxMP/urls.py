@@ -21,7 +21,6 @@ from django.views.static import serve
 from django.urls import include
 
 from system.views_user import IndexView, LoginView, LogoutView
-from system.test import TestView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -29,7 +28,6 @@ urlpatterns = [
     path('login/', LoginView.as_view(), name='login'),
     path('logout/', LogoutView.as_view(), name='logout'),
     path('system/', include('system.urls', namespace='system')),
-    path('test/<gender>/', TestView.as_view(), name='test'),
 ]
 
 if settings.DEBUG:
