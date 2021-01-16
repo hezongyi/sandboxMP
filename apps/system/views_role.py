@@ -1,7 +1,7 @@
 from django.views.generic import TemplateView
 from .mixin import LoginRequiredMixin
 from .models import Role
-from custom import SandboxCreateView
+from custom import SandboxCreateView, SandboxUpdateView
 
 import json
 
@@ -27,3 +27,9 @@ class RoleListView(LoginRequiredMixin, View):
         ret = dict(data=list(Role.objects.values(*fields)))
         return HttpResponse(json.dumps(ret), content_type='application/json')
 
+
+class RoleUpdateView(SandboxUpdateView):
+
+    model = Role
+    fields = '__all__'
+    template_name_suffix = '_update'

@@ -128,6 +128,20 @@
         $("#btnRefresh").click(function () {
             oDataTable.ajax.reload();
         });
+        function doUpdate(id) {
+            layer.open({
+                type: 2,
+                title: '编辑',
+                shadeClose: false,
+                maxmin: true,
+                area: ['800px', '400px'],
+                content: ["{% url 'system:rbac-role-update' %}" + '?id=' + id, 'no'],
+                end: function () {
+                    oDataTable.ajax.reload();
+                }
+            });
+
+        }
     </script>
 
 {% endblock %}
