@@ -1,22 +1,19 @@
-# @Time   : 2018/10/16 23:11
-# @Author : RobbieHan
-# @File   : views_user.py
-
-import re
 import json
+import re
 
-from django.shortcuts import render, HttpResponse
-from django.views.generic.base import View, TemplateView
+from django.db.models import Q
+from django.views.generic.base import TemplateView
+from django.shortcuts import render, HttpResponse, get_object_or_404
+from django.views.generic.base import View
 from django.http import HttpResponseRedirect
 from django.contrib.auth import authenticate, login, logout, get_user_model
-from django.urls import reverse
 from django.contrib.auth.hashers import make_password
-from django.shortcuts import get_object_or_404
-from django.db.models import Q
+from django.urls import reverse
 
+from .models import Structure, Role
 from .forms import LoginForm, UserCreateForm, UserUpdateForm, PasswordChangeForm
 from .mixin import LoginRequiredMixin
-from .models import Structure, Role
+
 from apps.custom import BreadcrumbMixin
 
 User = get_user_model()
@@ -49,12 +46,12 @@ class LoginView(View):
                     login(request, user)
                     return HttpResponseRedirect(redirect_to)
                 else:
-                    ret['msg'] = '用户未激活！'
+                    ret['msg'] = '用户未激活'
             else:
                 ret['msg'] = '用户名或密码错误！'
         else:
-            ret['msg'] = '用户和密码不能为空！'
-        return render(request, 'system/users/login.html', ret)
+            ret['msg'] = '用户名和密码不能为空！'
+        return render(request, 'system/users/Login.html', ret)
 
 
 class LogoutView(View):
@@ -65,6 +62,7 @@ class LogoutView(View):
 
 
 class UserView(LoginRequiredMixin, BreadcrumbMixin, TemplateView):
+
     template_name = 'system/users/user.html'
 
 
@@ -79,9 +77,6 @@ class UserListView(LoginRequiredMixin, View):
 
 
 class UserCreateView(LoginRequiredMixin, View):
-    """
-    添加用户
-    """
 
     def get(self, request):
         users = User.objects.exclude(username='admin')
@@ -174,7 +169,7 @@ class PasswordChangeView(LoginRequiredMixin, View):
                     'status': 'fail',
                     'password_change_form_errors': password_change_form_errors[0]
                 }
-        return HttpResponse(json.dumps(ret), content_type='application/json')
+            return HttpResponse(json.dumps(ret), content_type='application/json')
 
 
 class UserDeleteView(LoginRequiredMixin, View):
@@ -207,7 +202,7 @@ class UserEnableView(LoginRequiredMixin, View):
 
 class UserDisableView(LoginRequiredMixin, View):
     """
-    启用用户：单个或批量启用
+   禁用用户：单个或批量禁用
     """
 
     def post(self, request):
@@ -216,4 +211,11 @@ class UserDisableView(LoginRequiredMixin, View):
             queryset = User.objects.extra(where=["id IN(" + id_nums + ")"])
             queryset.filter(is_active=True).update(is_active=False)
             ret = {'result': 'True'}
+        return HttpResponse(json.dumps(ret), content_type='application/json')
+
+
+class UserListView(LoginRequiredMixin, View):
+    def get(self, request):
+        fields = ['id', 'name', 'gender', 'mobile', 'email', 'department__name', 'post', 'superior__name', 'is_active']
+        ret = dict(data=list(User.objects.values(*fields)))
         return HttpResponse(json.dumps(ret), content_type='application/json')

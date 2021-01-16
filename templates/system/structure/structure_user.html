@@ -31,7 +31,7 @@
                                 class="glyphicon glyphicon-backward"></i></button>
                     </div>
                     <div class="col-xs-5">
-                        <label class="control-label">{{structure.name}}-已绑定用户:</label>
+                        <label class="control-label">编辑：{{structure.name}}-已绑定用户:</label>
                         <select name="to" id="multiselect_to" class="form-control" size="18" multiple="multiple">
                             {% for item in added_users %}
                                 <option value="{{ item.id }}">{{ item.name }}({{ item.username }})</option>

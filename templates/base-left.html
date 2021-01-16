@@ -21,11 +21,11 @@
       <!-- /.search form -->
 
       <!-- Sidebar Menu -->
-     <ul class="sidebar-menu">
+      <ul class="sidebar-menu">
         <li class="header"></li>
-        <!-- Optionally, you can add icons to the links -->
          {% for menu in request.reveal_menu %}
             {% if not menu.url %}
+            <!--如果菜单没有url则这个二级菜单是一个菜单组，样式设置为treeview-->
                 <li class="treeview" id="{{ menu.code }}">
                     <a href="">
                         <i class="{{ menu.icon }}"></i><span>{{ menu.name }}</span>
@@ -34,6 +34,7 @@
                     </a>
                     <ul class="treeview-menu">
                         {% for sub in  menu.sub_menu %}
+                        <!--获取二级菜单的子菜单，作为折叠组中的三级菜单 -->
                             <li id="{{ sub.code }}">
                                 <a href="{{ sub.url }}"><i class="fa fa-caret-right"></i>{{ sub.name }}</a>
                             </li>
@@ -41,6 +42,7 @@
                     </ul>
                 </li>
             {% else %}
+            <!-- 如果二级菜单有URL，则这是一个功能菜单，直接作为导航菜单，不再添加折叠样式 -->
                 <li id="{{ menu.code }}">
                     <a href="{{ menu.url }}"><i class="{{ menu.icon }}"></i><span>{{ menu.name }}</span>
                     </a>

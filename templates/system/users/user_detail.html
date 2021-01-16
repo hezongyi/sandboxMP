@@ -10,6 +10,7 @@
     <div class="box box-danger">
         <form class="form-horizontal" id="addForm" method="post">
             {% csrf_token %}
+            <!-- 请查看下面知识点介绍中注释1：-->
             <input type="hidden" name='id' value="{{ user.id }}"/>
             <input type="hidden" name='user' value="save"/>
             <div class="box-body">
@@ -27,7 +28,7 @@
                             <select class="form-control" name="gender">
                                 <option value={{ user.gender }}> {{ user.get_gender_display }} </option>
                                 <option value="male">男</option>
-                                <option value="famale">女</option>
+                                <option value="female">女</option>
                             </select>
                         </div>
 
@@ -78,6 +79,7 @@
                     <div class="form-group has-feedback">
                         <label class="col-sm-2 control-label">入职日期</label>
                         <div class="col-sm-3">
+                        <!-- 请查看下面知识点介绍中注释2：-->
                             <input type="text" class="form-control pull-right form_datetime" name="joined_date"
                                    value="{{ user.joined_date|date:"Y-m-d" }}"/>
                         </div>
@@ -140,7 +142,7 @@
 {% block javascripts %}
     <script src="{% static 'bootstrap/js/bootstrap-datetimepicker.js' %}"></script>
     <script src="{% static 'plugins/select2/select2.full.min.js' %}"></script>
-    <script type="text/javascript">
+   <script type="text/javascript">
         /*点取消刷新新页面*/
         $("#btnCancel").click(function () {
             window.location.reload();
@@ -168,11 +170,17 @@
             $(".select2").select2();
         });
 
+        $(function () {
+            //Initialize Select2 Elements
+            $(".select2").select2();
+        });
+
+        //分界线，下面是新添加的内容
         $("#btnSave").click(function () {
             var data = $("#addForm").serialize();
             $.ajax({
                 type: $("#addForm").attr('method'),
-                url: "{% url 'system:basic-user-update' %}",
+                url: "/system/basic/user/update/",
                 data: data,
                 cache: false,
                 success: function (msg) {
@@ -187,6 +195,34 @@
                     return;
                 }
             });
+        });
+
+        $(function () {
+            //Initialize Select2 Elements
+            $(".select2").select2();
+        });
+
+        //分界线，下面是新添加的内容
+        $("#btnSave").click(function () {
+            var data = $("#addForm").serialize();
+            $.ajax({
+                type: $("#addForm").attr('method'),
+                url: "/system/basic/user/update/",
+                data: data,
+                cache: false,
+                success: function (msg) {
+                    if (msg.status == 'success') {
+                        layer.alert('数据保存成功！', {icon: 1}, function (index) {
+                            parent.layer.closeAll(); //关闭所有弹窗
+                        });
+                    } else if (msg.status == 'fail') {
+                        layer.alert('数据保存失败', {icon: 5});
+                        //$('errorMessage').html(msg.message)
+                    }
+                    return;
+                }
             });
+        });
+
     </script>
 {% endblock %}

@@ -1,8 +1,10 @@
-from django.views.generic import ListView
+from apps.custom import SandboxCreateView, SandboxUpdateView
+
+from .models import Menu
 
 from .mixin import LoginRequiredMixin
-from apps.custom import SandboxCreateView, SandboxUpdateView, BreadcrumbMixin
-from .models import Menu
+from django.views.generic import ListView
+from apps.custom import BreadcrumbMixin
 
 
 class MenuCreateView(SandboxCreateView):
@@ -27,3 +29,4 @@ class MenuUpdateView(SandboxUpdateView):
     def get_context_data(self, **kwargs):
         kwargs['menu_all'] = Menu.objects.all()
         return super().get_context_data(**kwargs)
+

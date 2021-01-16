@@ -1,17 +1,13 @@
-# @Time   : 2018/10/18 23:04
-# @Author : RobbieHan
-# @File   : views_structure.py
-
 import json
 
-from django.views.generic.base import TemplateView
-from django.views.generic.base import View
-from django.shortcuts import render
-from django.shortcuts import HttpResponse
+from django.views.generic import View
+from django.views.generic import TemplateView
+from django.shortcuts import render, HttpResponse
 from django.shortcuts import get_object_or_404
 from django.contrib.auth import get_user_model
 
 from .mixin import LoginRequiredMixin
+
 from .models import Structure
 from .forms import StructureForm
 from apps.custom import BreadcrumbMixin
@@ -19,7 +15,7 @@ from apps.custom import BreadcrumbMixin
 User = get_user_model()
 
 
-class StructureView(LoginRequiredMixin,  BreadcrumbMixin, TemplateView):
+class StructureView(LoginRequiredMixin, BreadcrumbMixin, TemplateView):
 
     template_name = 'system/structure/structure.html'
 
@@ -73,7 +69,7 @@ class Structure2UserView(LoginRequiredMixin, View):
             added_users = structure.userprofile_set.all()
             all_users = User.objects.all()
             un_add_users = set(all_users).difference(added_users)
-            ret = dict(structure=structure, added_users=added_users, un_add_users=list(un_add_users))
+            ret = dict(structure=structure, added_users=added_users,un_add_users=list(un_add_users))
         return render(request, 'system/structure/structure_user.html', ret)
 
     def post(self, request):
@@ -88,3 +84,4 @@ class Structure2UserView(LoginRequiredMixin, View):
                 structure.userprofile_set.add(user)
         res['result'] = True
         return HttpResponse(json.dumps(res), content_type='application/json')
+
